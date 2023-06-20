@@ -62,8 +62,8 @@
       },
       methods: {
         addRecord: function () {
-          var date = new Date();
-          var record = {
+          let date = new Date();
+          let record = {
             id: Date.now(),
             text: this.newRecord,
             time: new Intl.DateTimeFormat('ru', { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }).format(date)
