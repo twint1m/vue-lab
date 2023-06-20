@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>
+    <%= htmlWebpackPlugin.options.title %>
+  </title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <form>
+      <label>
+        Введите запись:
+        <input type="text" v-model="newRecord" v-bind:class="inputClass">
+        <span v-if="remainingChars >= 0">{{ remainingChars }}</span>
+      </label>
+      <button type="button" v-on:click="addRecord" v-bind:disabled="isInvalid">Добавить</button>
+    </form>
+
+    <hr>
+
+    <h2 v-if="records.length === 0">Нет записей</h2>
+    <h2 v-else-if="records.length === 1">Запись</h2>
+    <h2 v-else>Записи</h2>
+    <span v-show="records.length > 0">{{ records.length }}</span>
+
+    <ul>
+      <li v-for="record in records" v-bind:key="record.id">
+        <div>{{ record.text }}</div>
+        <div>{{ record.time }}</div>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        newRecord: '',
+        records: [],
+        maxChars: 140
+      },
+      computed: {
+        remainingChars: function () {
+          return this.maxChars - this.newRecord.length;
+        },
+        isInvalid: function () {
+          return this.newRecord.length === 0 || this.remainingChars < 0;
+        },
+        inputClass: function () {
+          return {
+            'is-invalid': this.remainingChars < 0,
+            'is-warning': this.remainingChars >= 0 && this.remainingChars <= 10
+          };
+        }
+      },
+      methods: {
+        addRecord: function () {
+          var date = new Date();
+          var record = {
+            id: Date.now(),
+            text: this.newRecord,
+            time: new Intl.DateTimeFormat('ru', { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }).format(date)
+          };
+          this.records.push(record);
+          this.newRecord = '';
+        }
+      }
+    });
+  </script>
+  <style>
+    .is-invalid {
+      color: red;
+    }
+
+    .is-warning {
+      color: yellow;
+    }
+    li {
+      list-style: none;
+    }
+  </style>
+  <!-- built files will be auto injected -->
+</body>
+
+</html>
